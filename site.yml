@@ -1,0 +1,12 @@
+---
+- name: Prepare CentOS base installation
+  hosts: centos-server
+  become_user: root
+
+  roles:
+    - common
+    # - security
+    # - nginx
+    # - php-fpm
+    # - letsencrypt
+    # - mariadb

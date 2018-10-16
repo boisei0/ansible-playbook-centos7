@@ -1,0 +1,71 @@
+---
+- name: Update packages
+  yum:
+    name: *
+    state: latest
+
+- name: Create servermanager group
+  group:
+    name: servermanagers
+    state: present
+
+- name: Create new admin user within servermanagers group
+  user:
+    name: "{{ admin_user }}"
+    group: servermanagers
+
+- name: Make sure the timeout for sudoers is set to 10 minutes
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^Defaults\s+env_reset'
+    line: 'Defaults    env_reset, timestamp_timeout=10'
+    validate: visudo -cf %
+
+- name: Make sure that the servermanagers group has sudo access
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%servermanagers'
+    line: '%servermanagers ALL=(ALL) ALL'
+    validate: visudo -cf %
+
+- name: Add the EPEL-Release to yum
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install additional packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - bzip2
+      - ccze
+      - coreutils
+      - fail2ban-firewalld
+      - firewalld
+      - gzip
+      - hddtemp
+      - htop
+      - iftop
+      - lm_sensors
+      - lsof
+      - lynx
+      - mc
+      - mlocate
+      - nano
+      - net-tools
+      - NetworkManager-tui
+      - policycoreutils-python
+      - python-inotify
+      - screen
+      - setools-console
+      - setroubleshoot
+      - setroubleshoot-server
+      - smartmontools
+      - tar
+      - wget
+      - unzip
+      - yum-utils
+      - yum-cron
